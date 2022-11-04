@@ -2,6 +2,7 @@ package uk.ac.cf.cs.nsa.cmt653.assignment.model;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import uk.ac.cf.cs.nsa.cmt653.assignment.utils.IDGenerator;
 
 public class Task {
     private final int id;
@@ -19,7 +20,7 @@ public class Task {
         status = Status.unDone;
     }
     public Task(String description, Long deadlineInMinutes) {
-        this.id = IdGenerator.generate(this.getClass());
+        this.id = IDGenerator.generate(this.getClass());
         this.description = description;
         this.deadlineInMinutes = (deadlineInMinutes > 0L)
                 ? Duration.ofMinutes(deadlineInMinutes)
