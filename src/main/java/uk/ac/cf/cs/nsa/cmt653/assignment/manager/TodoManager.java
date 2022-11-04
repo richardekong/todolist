@@ -1,11 +1,12 @@
-package uk.ac.cf.cs.nsa.cmt653.assignment.repository;
+package uk.ac.cf.cs.nsa.cmt653.assignment.manager;
 
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
+import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoRepository;
 
 import java.util.LinkedHashMap;
 
-public class TodoManager implements TodoRepository{
+public class TodoManager implements TodoRepository {
 
     @Override
     public Todo createTodo(Todo todo) {
