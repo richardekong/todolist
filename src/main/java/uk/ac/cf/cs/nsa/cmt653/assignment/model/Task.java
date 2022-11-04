@@ -12,14 +12,14 @@ public class Task {
     private static final Long defaultDeadLineInMinutes = 10L;
 
     public Task(){
-        id = IDGenerator.generate();
+        id = IDGenerator.generate(this.getClass());
         description = "Task-"+id;
         deadlineInMinutes = Duration.ofMinutes(defaultDeadLineInMinutes);
         startTime = LocalTime.now();
         status = Status.unDone;
     }
     public Task(String description, Long deadlineInMinutes) {
-        this.id = IdGenerator.generate();
+        this.id = IdGenerator.generate(this.getClass());
         this.description = description;
         this.deadlineInMinutes = (deadlineInMinutes > 0L)
                 ? Duration.ofMinutes(deadlineInMinutes)
