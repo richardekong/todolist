@@ -6,3 +6,4 @@ public interface IDGenerator {
         return 0;
     }
 }
+
