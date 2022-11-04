@@ -2,7 +2,6 @@ package uk.ac.cf.cs.nsa.cmt653.assignment.model;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import uk.ac.cf.cs.nsa.cmt653.assignment.utils.IDGenerator;
 
 public class Task {
     private final int id;
