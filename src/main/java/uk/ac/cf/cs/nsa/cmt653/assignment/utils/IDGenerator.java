@@ -2,7 +2,7 @@ package uk.ac.cf.cs.nsa.cmt653.assignment.utils;
 
 public interface IDGenerator {
 
-    default <T extends Class<?>> int generate(T whichClass){
+    static <T extends Class<?>> int generate(T whichClass){
         return 0;
     }
 }
