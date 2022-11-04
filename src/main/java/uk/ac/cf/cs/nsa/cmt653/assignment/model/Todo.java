@@ -1,5 +1,7 @@
 package uk.ac.cf.cs.nsa.cmt653.assignment.model;
 
+import uk.ac.cf.cs.nsa.cmt653.assignment.utils.IDGenerator;
+
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
