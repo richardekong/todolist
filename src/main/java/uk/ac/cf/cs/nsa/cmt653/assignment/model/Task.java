@@ -61,19 +61,5 @@ public class Task {
         return status.status();
     }
 
-    public enum Status {
-        unDone("undone"), done("done");
-        private final String status;
-
-        Status(String status) {
-            this.status = status;
-        }
-
-        public String status() {
-            return status;
-        }
-
-    }
-
 }
 
