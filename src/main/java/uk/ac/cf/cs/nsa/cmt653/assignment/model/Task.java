@@ -9,39 +9,53 @@ public class Task {
     private final LocalTime startTime;
     private Duration deadlineInMinutes;
     private Status status;
+    private static final Long defaultDeadLineInMinutes = 10L;
 
-    public Task(int id, String description, Long deadlineInMinutes) {
-        this.id = id;
+    public Task(){
+        id = IDGenerator.generate();
+        description = "Task-"+id;
+        deadlineInMinutes = Duration.ofMinutes(defaultDeadLineInMinutes);
+        startTime = LocalTime.now();
+        status = Status.unDone;
+    }
+    public Task(String description, Long deadlineInMinutes) {
+        this.id = IdGenerator.generate();
         this.description = description;
-        this.deadlineInMinutes = Duration.ofMinutes(deadlineInMinutes);
+        this.deadlineInMinutes = (deadlineInMinutes > 0L)
+                ? Duration.ofMinutes(deadlineInMinutes)
+                : Duration.ofMinutes(defaultDeadLineInMinutes);
         this.startTime = LocalTime.now();
         this.status = Status.unDone;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public void setDescription(String description){
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
-    public void setDeadlineInMinutes(Long deadlineInMinutes){
+    public void setDeadlineInMinutes(Long deadlineInMinutes) {
+        if (deadlineInMinutes <= 0L) {
+            System.err.println("Invalid Deadline!");
+            return;
+        }
         this.deadlineInMinutes = Duration.ofMinutes(deadlineInMinutes);
     }
 
-    public Duration getDeadlineInMinutes(){
+    public Duration getDeadlineInMinutes() {
         return deadlineInMinutes;
     }
 
-    public String getStatusString(){
+    public String getStatusString() {
         LocalTime estimatedDeadline = this.startTime.plus(deadlineInMinutes);
         LocalTime now = LocalTime.now();
-        if (now.isAfter(estimatedDeadline)){
+        if (now.isAfter(estimatedDeadline)) {
             status = Status.done;
         }
         return status.status();
@@ -50,9 +64,11 @@ public class Task {
     public enum Status {
         unDone("undone"), done("done");
         private final String status;
+
         Status(String status) {
             this.status = status;
         }
+
         public String status() {
             return status;
         }
