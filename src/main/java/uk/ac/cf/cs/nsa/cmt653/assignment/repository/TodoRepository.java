@@ -3,6 +3,7 @@ package uk.ac.cf.cs.nsa.cmt653.assignment.repository;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 public interface TodoRepository {
@@ -18,6 +19,10 @@ public interface TodoRepository {
     void remove(String todoName, int taskId);
 
     String checkTaskStatus(String todoName, int taskId);
+
+    default LinkedHashMap<String, Todo> dataStore() {
+        return TodoDataStore.INSTANCE.getDataStore();
+    }
 
 }
 

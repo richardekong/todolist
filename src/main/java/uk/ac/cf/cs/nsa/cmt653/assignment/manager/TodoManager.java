@@ -2,16 +2,13 @@ package uk.ac.cf.cs.nsa.cmt653.assignment.manager;
 
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
-import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoDataStore;
 import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoRepository;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 public class TodoManager implements TodoRepository {
-    LinkedHashMap<String, Todo> dataStore = TodoDataStore.todoDataStore;
-
+    LinkedHashMap<String, Todo> dataStore = dataStore();
     @Override
     public void saveTodo(Todo todo) throws RuntimeException {
         if (dataStore.containsKey(todo.getName())) {
