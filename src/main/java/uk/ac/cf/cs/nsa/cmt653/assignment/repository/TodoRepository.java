@@ -11,7 +11,7 @@ public interface TodoRepository {
 
     Todo findTodoByName(String name);
 
-    LinkedList<Todo> listTodos();
+    LinkedList<String> listNamesOfTodos();
 
     void appendTaskToEndOfTodo(String todoName, Task task);
 
