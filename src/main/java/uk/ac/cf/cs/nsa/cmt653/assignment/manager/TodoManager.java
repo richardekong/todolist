@@ -7,6 +7,7 @@ import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoRepository;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class TodoManager implements TodoRepository {
     LinkedHashMap<String, Todo> dataStore = TodoDataStore.todoDataStore;
@@ -30,8 +31,12 @@ public class TodoManager implements TodoRepository {
     }
 
     @Override
-    public LinkedList<Todo> listTodos() {
-        return new LinkedList<>(dataStore.values());
+    public LinkedList<String> listNamesOfTodos() {
+        return new LinkedList<>(dataStore
+                .values()
+                .stream()
+                .map(Todo::getName)
+                .toList());
     }
 
     @Override
