@@ -3,17 +3,17 @@ package uk.ac.cf.cs.nsa.cmt653.assignment.repository;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 public interface TodoRepository {
 
-    Todo createTodo(Todo todo);
+    void saveTodo(Todo todo);
 
-    Todo viewTodo(String name);
+    Todo findTodoByName(String name);
 
-    LinkedHashMap<String, Todo> listTodos();
+    LinkedList<Todo> listTodos();
 
-    void append(String todoName, Task task);
+    void appendTaskToEndOfTodo(String todoName, Task task);
 
     void remove(String todoName, int taskId);
 
