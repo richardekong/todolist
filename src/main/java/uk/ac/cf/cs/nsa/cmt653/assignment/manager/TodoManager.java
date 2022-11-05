@@ -14,8 +14,6 @@ public class TodoManager implements TodoRepository {
     @Override
     public void saveTodo(Todo todo) throws RuntimeException {
         if (dataStore.containsKey(todo.getName())) {
-            System.err.println(todo.getName() + " already exist, " +
-                    "\n would you love to add another Todo? [Y/N]");
             throw new RuntimeException(todo.getName() + " already exist");
         }
         dataStore.put(todo.getName(), todo);
@@ -26,8 +24,6 @@ public class TodoManager implements TodoRepository {
     public Todo findTodoByName(String todoName) throws RuntimeException {
         Todo todo = dataStore.get(todoName);
         if (todo == null) {
-            System.err.println(todoName + "does not exist," +
-                    " \nWould you love to try again? [Y/N]");
             throw new RuntimeException(todoName + "does not exist.");
         }
         return todo;
@@ -41,8 +37,6 @@ public class TodoManager implements TodoRepository {
     @Override
     public void appendTaskToEndOfTodo(String todoName, Task task) throws RuntimeException {
         if (!dataStore.containsKey(todoName)) {
-            System.err.println(todoName + "does not exist, " +
-                    "\n Would you like to try again? [Y/N]");
             throw new RuntimeException(todoName + "does not exist");
         }
         dataStore.get(todoName)
@@ -53,8 +47,6 @@ public class TodoManager implements TodoRepository {
     @Override
     public void remove(String todoName, int taskId) throws RuntimeException {
         if (!dataStore.containsKey(todoName)) {
-            System.err.println(todoName + "does not exist," +
-                    " \n Would you like to try again? [Y/N]");
             throw new RuntimeException(todoName + "does not exist");
         }
 
@@ -67,8 +59,6 @@ public class TodoManager implements TodoRepository {
                 .orElse(new Task());
 
         if (!tasks.contains(theTask)) {
-            System.err.println("Task with " + taskId + " does not exist, " +
-                    "\n Would you like to try again? [Y/N]");
             throw new RuntimeException("Task with " + taskId + " does not exist");
         }
 
@@ -81,8 +71,6 @@ public class TodoManager implements TodoRepository {
     public String checkTaskStatus(String todoName, int taskId) throws RuntimeException {
 
         if (!dataStore.containsKey(todoName)) {
-            System.err.println(todoName + " does not exist, " +
-                    "\n Would you like to try again? [Y/N] ");
             throw new RuntimeException("Task with " + todoName + " does not exist");
         }
 
