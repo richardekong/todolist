@@ -16,9 +16,9 @@ public interface TodoRepository {
 
     void appendTaskToEndOfTodo(String todoName, Task task);
 
-    void remove(String todoName, int taskId);
+    void remove(String todoName, int taskPosition);
 
-    String checkTaskStatus(String todoName, int taskId);
+    String checkTaskStatus(String todoName, int taskPosition);
 
     default LinkedHashMap<String, Todo> dataStore() {
         return TodoDataStore.INSTANCE.getDataStore();

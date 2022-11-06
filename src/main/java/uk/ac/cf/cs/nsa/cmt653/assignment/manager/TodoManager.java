@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 public class TodoManager implements TodoRepository {
     LinkedHashMap<String, Todo> dataStore = dataStore();
+
     @Override
     public void saveTodo(Todo todo) throws RuntimeException {
         if (dataStore.containsKey(todo.getName())) {
@@ -47,42 +48,38 @@ public class TodoManager implements TodoRepository {
     }
 
     @Override
-    public void remove(String todoName, int taskId) throws RuntimeException {
+    public void remove(String todoName, int taskPosition) throws RuntimeException {
+        int actualPosition = taskPosition - 1;
         if (!dataStore.containsKey(todoName)) {
             throw new RuntimeException(todoName + "does not exist");
         }
-
-        LinkedList<Task> tasks = dataStore.get(todoName)
-                .getTasks();
-
-        Task theTask = tasks.stream()
-                .filter(task -> task.getId() == taskId)
-                .findAny()
-                .orElse(new Task());
-
-        if (!tasks.contains(theTask)) {
-            throw new RuntimeException("Task with " + taskId + " does not exist");
-        }
-
-        if (tasks.remove(theTask)) {
-            System.out.println("Task with " + taskId + " removed!");
+        LinkedList<Task> tasks = dataStore.get(todoName).getTasks();
+        try {
+            Task theTask = tasks.get(actualPosition);
+            if (tasks.remove(theTask)) {
+                System.out.println("Task " + actualPosition + " removed!");
+            }
+        } catch (IndexOutOfBoundsException exception) {
+            throw new IndexOutOfBoundsException("Task " + taskPosition + "does not exist");
         }
     }
 
     @Override
-    public String checkTaskStatus(String todoName, int taskId) throws RuntimeException {
-
+    public String checkTaskStatus(String todoName, int taskPosition) throws RuntimeException {
+        int actualPosition = taskPosition - 1;
+        String status = "";
         if (!dataStore.containsKey(todoName)) {
             throw new RuntimeException("Task with " + todoName + " does not exist");
         }
-
-        return dataStore.get(todoName)
-                .getTasks()
-                .stream()
-                .filter(task -> task.getId() == taskId)
-                .findFirst()
-                .map(Task::getStatusString)
-                .orElse("");
+        try {
+            status = dataStore.get(todoName)
+                    .getTasks()
+                    .get(actualPosition)
+                    .getStatusString();
+        } catch (IndexOutOfBoundsException exception) {
+            throw new IndexOutOfBoundsException("Task " + taskPosition + "does not exist");
+        }
+        return status;
     }
 }
 
