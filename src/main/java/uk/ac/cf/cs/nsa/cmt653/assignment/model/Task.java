@@ -11,7 +11,7 @@ public class Task {
     private static final Long defaultDeadLineInMinutes = 10L;
 
     public Task() {
-        description = "Anonymous Task";
+        description = "New-" + getClass().getSimpleName();
         deadlineInMinutes = Duration.ofMinutes(defaultDeadLineInMinutes);
         startTime = LocalTime.now();
         status = Status.unDone;
