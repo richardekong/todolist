@@ -7,5 +7,7 @@ public class Constant {
     public static final String REMOVE_TASK = "remove task";
     public static final String CREATE_NEW_TODO = "create new todo";
     public static final String RECORD_TASK_COMPLETION = "record task completion";
+    public static final String QUIT = "quit";
+    public static final String HELP = "help";
 }
 

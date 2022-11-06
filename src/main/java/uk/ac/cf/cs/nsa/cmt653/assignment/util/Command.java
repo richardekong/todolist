@@ -1,22 +1,24 @@
 package uk.ac.cf.cs.nsa.cmt653.assignment.util;
 
 
-import static uk.ac.cf.cs.nsa.cmt653.assignment.util.Constant.*;
-
 public enum Command {
-    //initialize enum items with Runnable still not sure if this is good,
-    // please I need your expert advice
-    listAllTodoNames(LIST_ALL_TODO_NAMES, () -> {
+
+    LIST_ALL_TODO_NAMES(Constant.LIST_ALL_TODO_NAMES, () -> {
     }),
-    viewATodoList(VIEW_TODO_LIST, () -> {
+    VIEW_TODO_LIST(Constant.VIEW_TODO_LIST, () -> {
     }),
-    AppendTask(APPEND_TASK, () -> {
+    APPEND_TASK(Constant.APPEND_TASK, () -> {
     }),
-    RemoveTask(REMOVE_TASK, () -> {
+    REMOVE_TASK(Constant.REMOVE_TASK, () -> {
     }),
-    CreateNewTodo(CREATE_NEW_TODO, () -> {
+    CREATE_NEW_TODO(Constant.CREATE_NEW_TODO, () -> {
     }),
-    recordTaskCompletion(RECORD_TASK_COMPLETION, () -> {
+    RECORD_TASK_COMPLETION(Constant.RECORD_TASK_COMPLETION, () -> {
+    }),
+    QUIT(Constant.QUIT, () -> System.exit(0)),
+
+    HELP(Constant.HELP, () -> {
+
     });
     private Runnable executionBlock;
     private final String instruction;
