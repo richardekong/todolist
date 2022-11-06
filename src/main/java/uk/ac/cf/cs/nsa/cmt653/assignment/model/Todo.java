@@ -22,7 +22,6 @@ public class Todo {
         this.tasks = tasks;
         createAt = LocalTime.now();
     }
-
     public void setName(String name){
         this.name = name;
     }
