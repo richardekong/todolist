@@ -74,9 +74,10 @@ public class CommandLineRunner {
         Command.HELP.executionBlock(() -> {
             printStars();
             System.out.print("*\t\t\t\t\tTODOLIST HELP SECTION\t\t\t\t\t\t\t*\n");
-            System.out.print("*********************************************************************\n");
-            Arrays.stream(Command.values()).forEach(cmd -> System.out.printf("\t\tType\s\"%s\"\sto\s%s\t\t\t\t\t\t\t\n", cmd.instruction(), cmd.tip()));
-            System.out.print("*********************************************************************\n");
+            printStars();
+            Arrays.stream(Command.values()).forEach(cmd -> System.out.printf("\t\tType\s\"%s\"\sto\s%s\t\t\t\t\t\t\t\n",
+                    cmd.instruction(), cmd.tip()));
+            printStars();
 
         });
     }
@@ -206,3 +207,4 @@ public class CommandLineRunner {
         System.out.print("\n*********************************************************************\n");
     }
 }
+
