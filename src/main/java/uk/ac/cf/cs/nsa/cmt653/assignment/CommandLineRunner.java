@@ -6,98 +6,207 @@ import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
 import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoRepository;
 import uk.ac.cf.cs.nsa.cmt653.assignment.util.Command;
 
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static uk.ac.cf.cs.nsa.cmt653.assignment.util.Constant.*;
+
 public class CommandLineRunner {
+
     public static void main(String[] args) {
-
-        System.out.println("Application entry point");
-
         TodoRepository repo = new TodoManager();
+        Scanner input = new Scanner(System.in);
+        AtomicBoolean hasNotQuit = new AtomicBoolean(true);
+        printTitle();
+        showHelpDetails();
+        System.out.println("Type a command ...");
+        do {
+            String commandPhrase = input.nextLine();
+            switch (commandPhrase) {
+                case LIST_ALL_TODO_NAMES -> listNamesOfTodos(repo);
+                case VIEW_TODO_LIST -> {
+                    System.out.println("What's the Todo Name?");
+                    String todoName = input.nextLine();
+                    viewTodoListByTodoName(repo, todoName, input);
+                }
+                case APPEND_TASK -> {
+                    System.out.println("What's the Todo Name?");
+                    String todoName = input.nextLine();
+                    appendTaskToTodo(repo, todoName, input);
+                }
+                case REMOVE_TASK -> {
+                    System.out.println("What's the Todo Name?");
+                    String todoName = input.nextLine();
+                    removeTaskFromTodo(repo, todoName, input);
+                }
+                case CREATE_NEW_TODO -> {
+                    System.out.println("What's the Todo Name?");
+                    String todoName = input.nextLine();
+                    Todo todo = new Todo(todoName, new LinkedList<>());
+                    createNewTodo(repo, todo, input);
+                }
+                case RECORD_TASK_COMPLETION -> {
+                    System.out.println("What's the Todo Name?");
+                    String todoName = input.nextLine();
+                    checkTaskStatus(repo, todoName, input);
+                }
+                case HELP -> showHelpDetails();
 
-        //List of todo names
-        Command.LIST_ALL_TODO_NAMES.setExecutionBlock(() -> {
-            AtomicInteger counter = new AtomicInteger(0);
-            System.out.println("=================================");
-            System.out.println("List of Todo Names:");
-            System.out.println("=================================");
-            repo.listNamesOfTodos()
-                    .forEach(name -> System.out.printf("%d\t%s\n", counter.incrementAndGet(), name));
-        });
+                case QUIT -> System.exit(0);
 
-        //View a todo list
-        Command.VIEW_TODO_LIST.setExecutionBlock(() -> {
-            String todoName = "Lectures";
-            Todo lectureTodo = repo.findTodoByName(todoName);
-            System.out.println("=================================");
-            System.out.printf("\s%s:\s\n", lectureTodo.getName());
-            System.out.println("=================================");
-            System.out.println("+\tTasks:\n");
-            lectureTodo.getTasks().forEach(task ->{
-                System.out.printf("\t+\s%s\t%d\smins\t%s\n",
-                        task.getDescription(),
-                        (task.getDeadlineInMinutes().getSeconds()/60),
-                        task.getStatusString());
+            }
+
+
+        } while (hasNotQuit.get());
+
+    }
+
+    private static void printTitle() {
+        printStars();
+        System.out.print("*\t\t\t\t\tTODOLIST COMMANDLINE ASSIGNMENT\t\t\t\t\t*");
+        printStars();
+    }
+
+    private static void showHelpDetails() {
+        Command.HELP.executionBlock(() -> {
+            printStars();
+            System.out.print("*\t\t\t\t\tTODOLIST HELP SECTION\t\t\t\t\t\t\t*\n");
+            System.out.print("*********************************************************************\n");
+            Arrays.stream(Command.values()).forEach(cmd -> {
+                System.out.printf("\t\tType\s\"%s\"\sto\s%s\t\t\t\t\t\t\t\n", cmd.instruction(), cmd.tip());
             });
-        });
+            System.out.print("*********************************************************************\n");
 
-        //Add a task to a todo list
-        Command.APPEND_TASK.setExecutionBlock(() ->{
-            String todoName = "Lectures";
-            Todo lectureTodo = repo.findTodoByName(todoName);
-            lectureTodo.getTasks().add(new Task("Attend Cyber Security", 45L));
-            System.out.println("=================================");
-            System.out.printf("\s%s:\s\n", lectureTodo.getName());
-            System.out.println("=================================");
-            lectureTodo.getTasks().forEach(task ->{
-                System.out.printf("\s+\s%s\t%d\sminutes\t%s\s+\n",
-                        task.getDescription(),
-                        (task.getDeadlineInMinutes().getSeconds()/60),
-                        task.getStatusString());
-            });
-            System.out.print("\s++++++++++++++++++++++++++++++++++++++++++++++++\s");
         });
+    }
 
-        //Remove a task from a todo list
-        Command.REMOVE_TASK.setExecutionBlock(()->{
-            Todo cookingTodo = repo.findTodoByName("Cooking");
-            cookingTodo.getTasks().remove(4);
-            System.out.println("=================================");
-            System.out.printf("\s%s:\s\n", cookingTodo.getName());
-            System.out.println("=================================");
-            cookingTodo.getTasks().forEach(task ->{
-                System.out.printf("\s+\s%s\t%d\sminutes\t%s\s+\n",
-                        task.getDescription(),
-                        (task.getDeadlineInMinutes().getSeconds()/60),
-                        task.getStatusString());
-            });
-            System.out.print("\s++++++++++++++++++++++++++++++++++++++++++++++++\s");
+    private static void listNamesOfTodos(TodoRepository repository) {
+        AtomicInteger index = new AtomicInteger(1);
+        printStars();
+        repository.listNamesOfTodos().forEach(todoName -> {
+            System.out.printf("\t%d.\s%s\n", index.getAndIncrement(), todoName);
         });
+        printStars();
+    }
 
-        //Create a new todo list with its tasks
-        Command.CREATE_NEW_TODO.setExecutionBlock(()->{
-            LinkedList<Task> tasks = new LinkedList<>(
-                    List.of(
-                            new Task("Attend Lectures", 40L),
-                            new Task("Prepare for hackerthon", 50L),
-                            new Task("Prepare for video interview with ARM",30L)
-                    )
-            );
-            Todo mondayTodo = new Todo("Monday", tasks);
-            repo.saveTodo(mondayTodo);
-            AtomicInteger counter = new AtomicInteger(0);
-            System.out.println("=================================");
-            System.out.println("List of Todo Names:");
-            System.out.println("=================================");
-            repo.listNamesOfTodos()
-                    .forEach(name -> System.out.printf("%d\t%s\n", counter.incrementAndGet(), name));
-        });
+    private static void viewTodoListByTodoName(TodoRepository repository, String todoName, Scanner input) {
+        printStars();
+        try {
+            Todo todoToBeViewed = repository.findTodoByName(todoName);
+            AtomicInteger counter = new AtomicInteger(1);
+            System.out.println("Todo Name:\u0020" + todoToBeViewed.getName());
+            printStars();
+            todoToBeViewed.getTasks().forEach(task -> System.out.printf("\n%d.\s%s|\s%d\sminutes|\s%s\n",
+                    counter.getAndIncrement(),
+                    task.getDescription(),
+                    task.getDeadlineInMinutes().getSeconds() / 60,
+                    task.getStatusString()));
+        } catch (RuntimeException rte) {
+            System.err.println(rte.getMessage() + "\u0020Do you wish to continue?[Y/N]");
+            String reply = input.nextLine();
+            switch (reply) {
+                case Y -> {
+                    System.out.println("What's the Todo name again?");
+                    todoName = input.nextLine();
+                    viewTodoListByTodoName(repository, todoName, input);
+                }
+                case N -> System.exit(0);
+            }
+        }
+        printStars();
+    }
 
-        //check the status of a task
-        Command.RECORD_TASK_COMPLETION.setExecutionBlock(() ->{
-            System.out.println(repo.checkTaskStatus("Cooking", 4));
-        });
+    private static void appendTaskToTodo(TodoRepository repository, String todoName, Scanner input){
+        printStars();
+        try{
+           System.out.println("What is the task description?");
+           String description = input.nextLine();
+           System.out.println("What is the task deadline in minutes");
+           Long deadlineInMinutes = Long.parseLong(input.nextLine());
+           Task taskToAppend = new Task(description, deadlineInMinutes);
+           repository.appendTaskToEndOfTodo(todoName, taskToAppend);
+        }catch (RuntimeException rte){
+            System.err.println(rte.getMessage() + "\u0020Do you wish to continue?[Y/N]");
+            String reply = input.nextLine();
+            switch (reply){
+                case Y -> {
+                    System.out.println("What's the Todo name again?");
+                    todoName = input.nextLine();
+                    appendTaskToTodo(repository, todoName, input);
+                }
+                case N -> System.exit(0);
+            }
+        }
+        printStars();
+    }
+
+    private static void removeTaskFromTodo(TodoRepository repository, String todoName, Scanner input){
+        printStars();
+        try{
+            System.out.println("What's the position of this task?" );
+            int taskPosition = Integer.parseInt(input.nextLine());
+            repository.remove(todoName, taskPosition);
+        }catch (RuntimeException rte){
+            System.err.println(rte.getMessage()+"\u0020Do you wish to continue?[Y/N]");
+            switch (input.nextLine()){
+                case Y -> {
+                    System.out.println("What's the todo name again?");
+                    todoName = input.nextLine();
+                    removeTaskFromTodo(repository, todoName, input);
+                }
+                case N -> System.exit(0);
+            }
+        }
+    }
+
+    private static void createNewTodo(TodoRepository repository, Todo todo, Scanner input){
+        printStars();
+        System.out.println("What's the task description?");
+        String description = input.nextLine();
+        System.out.println("What's the task deadline in minutes?");
+        Long deadlineInMinutes = Long.parseLong(input.nextLine());
+        Task task = new Task(description, deadlineInMinutes);
+        boolean taskAdded = todo.getTasks().add(task);
+        if (taskAdded) {
+            System.out.println("Task added!");
+        }
+        System.out.println("Do you want to add another task?[Y/N]");
+        switch (input.nextLine()){
+            case Y -> createNewTodo(repository, todo, input);
+            case N -> {
+                try {
+                    repository.saveTodo(todo);
+                }catch (RuntimeException rte){
+                    System.err.println(rte.getMessage()+"\u0020Try again with a different todo name.");
+                }
+            }
+        }
+    }
+
+    private static void checkTaskStatus(TodoRepository repository, String todoName, Scanner input){
+        printStars();
+        try{
+            System.out.println("What's the position of this task?");
+            int taskPosition = Integer.parseInt(input.nextLine());
+            String status = repository.checkTaskStatus(todoName, taskPosition);
+            System.out.printf("\nTask\sis\s%s\n", status);
+        }catch(RuntimeException rte){
+            System.err.println(rte.getMessage()+"\u0020Do you wish to continue?[Y/N]");
+            switch (input.nextLine()){
+                case Y -> {
+                    System.out.println("What's the todo name again?");
+                    todoName = input.nextLine();
+                    checkTaskStatus(repository, todoName, input);
+                }
+                case N -> System.exit(0);
+            }
+        }
+    }
+
+    private static void printStars() {
+        System.out.print("\n*********************************************************************\n");
     }
 }
