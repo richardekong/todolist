@@ -7,3 +7,5 @@
 /dataSources/
 /dataSources.local.xml
 .gradle/7.4/
+*.mdf
+*.ldf

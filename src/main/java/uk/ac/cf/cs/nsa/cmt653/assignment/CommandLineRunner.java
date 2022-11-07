@@ -75,9 +75,7 @@ public class CommandLineRunner {
             printStars();
             System.out.print("*\t\t\t\t\tTODOLIST HELP SECTION\t\t\t\t\t\t\t*\n");
             System.out.print("*********************************************************************\n");
-            Arrays.stream(Command.values()).forEach(cmd -> {
-                System.out.printf("\t\tType\s\"%s\"\sto\s%s\t\t\t\t\t\t\t\n", cmd.instruction(), cmd.tip());
-            });
+            Arrays.stream(Command.values()).forEach(cmd -> System.out.printf("\t\tType\s\"%s\"\sto\s%s\t\t\t\t\t\t\t\n", cmd.instruction(), cmd.tip()));
             System.out.print("*********************************************************************\n");
 
         });
@@ -86,9 +84,7 @@ public class CommandLineRunner {
     private static void listNamesOfTodos(TodoRepository repository) {
         AtomicInteger index = new AtomicInteger(1);
         printStars();
-        repository.listNamesOfTodos().forEach(todoName -> {
-            System.out.printf("\t%d.\s%s\n", index.getAndIncrement(), todoName);
-        });
+        repository.listNamesOfTodos().forEach(todoName -> System.out.printf("\t%d.\s%s\n", index.getAndIncrement(), todoName));
         printStars();
     }
 
