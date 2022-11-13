@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static uk.ac.cf.cs.nsa.cmt653.assignment.util.Constant.*;
 
+
 public class CommandLineRunner {
 
     public static void main(String[] args) {
@@ -22,9 +23,9 @@ public class CommandLineRunner {
         AtomicBoolean hasNotQuit = new AtomicBoolean(true);
         printTitle();
         showHelpDetails();
-        System.out.println("Type a command ...");
+        System.out.println("Type or paste a command ...");
         do {
-            String commandPhrase = input.nextLine();
+            String commandPhrase = input.nextLine().toUpperCase().trim();
             switch (commandPhrase) {
                 case LIST_ALL_TODO_NAMES -> listNamesOfTodos(repo);
                 case VIEW_TODO_LIST -> {
@@ -55,112 +56,108 @@ public class CommandLineRunner {
                 }
                 case HELP -> showHelpDetails();
 
-                case QUIT -> System.exit(0);
+                case QUIT -> {
+                    hasNotQuit.set(false);
+                    System.exit(0);
+                }
+                default -> {
+                    System.err.println("No such command see details below for help");
+                    showHelpDetails();
+                }
 
             }
-
 
         } while (hasNotQuit.get());
 
     }
 
     private static void printTitle() {
-        printStars();
-        System.out.print("*\t\t\t\t\tTODOLIST COMMANDLINE ASSIGNMENT\t\t\t\t\t*");
-        printStars();
+        printDashes();
+        System.out.printf(HEADER_FORMAT, "|", "TODOLIST COMMANDLINE ASSIGNMENT", "|");
+        printDashes();
     }
 
     private static void showHelpDetails() {
-        Command.HELP.executionBlock(() -> {
-            printStars();
-            System.out.print("*\t\t\t\t\tTODOLIST HELP SECTION\t\t\t\t\t\t\t*\n");
-            printStars();
-            Arrays.stream(Command.values()).forEach(cmd -> System.out.printf("\t\tType\s\"%s\"\sto\s%s\t\t\t\t\t\t\t\n",
-                    cmd.instruction(), cmd.tip()));
-            printStars();
-
-        });
+        printDashes();
+        System.out.printf(HEADER_FORMAT, "|", "TODOLIST HELP SECTION", "|");
+        printDashes();
+        Arrays.stream(Command.values()).forEach(
+                cmd -> System.out.printf(
+                        "%-5s%-75s%-5s%n",
+                        "|",
+                        "Type or paste \"" + cmd.instruction() + "\" to " + cmd.tip(),
+                        "|"));
+        printDashes();
     }
 
     private static void listNamesOfTodos(TodoRepository repository) {
         AtomicInteger index = new AtomicInteger(1);
-        printStars();
+        printDashes();
         repository.listNamesOfTodos().forEach(todoName -> System.out.printf("\t%d.\s%s\n", index.getAndIncrement(), todoName));
-        printStars();
+        printDashes();
     }
 
     private static void viewTodoListByTodoName(TodoRepository repository, String todoName, Scanner input) {
-        printStars();
+        printDashes();
         try {
             Todo todoToBeViewed = repository.findTodoByName(todoName);
-            AtomicInteger counter = new AtomicInteger(1);
             System.out.println("Todo Name:\u0020" + todoToBeViewed.getName());
-            printStars();
-            todoToBeViewed.getTasks().forEach(task -> System.out.printf("\n%d.\s%s|\s%d\sminutes|\s%s\n",
-                    counter.getAndIncrement(),
-                    task.getDescription(),
-                    task.getDeadlineInMinutes().getSeconds() / 60,
-                    task.getStatusString()));
+            printDashes();
+            System.out.printf("%-40S%-20S%-10S", DESCRIPTION, DEADLINE, STATUS);
+            printDashes();
+            todoToBeViewed.getTasks().forEach(System.out::print);
         } catch (RuntimeException rte) {
             System.err.println(rte.getMessage() + "\u0020Do you wish to continue?[Y/N]");
-            String reply = input.nextLine();
-            switch (reply) {
-                case Y -> {
-                    System.out.println("What's the Todo name again?");
-                    todoName = input.nextLine();
-                    viewTodoListByTodoName(repository, todoName, input);
-                }
-                case N -> System.exit(0);
-            }
+            handleException(input, () -> {
+                System.out.println("What's the Todo name again?");
+                String newTodoName;
+                newTodoName = input.nextLine();
+                viewTodoListByTodoName(repository, newTodoName, input);
+            });
         }
-        printStars();
+        printDashes();
     }
 
-    private static void appendTaskToTodo(TodoRepository repository, String todoName, Scanner input){
-        printStars();
-        try{
-           System.out.println("What is the task description?");
-           String description = input.nextLine();
-           System.out.println("What is the task deadline in minutes");
-           Long deadlineInMinutes = Long.parseLong(input.nextLine());
-           Task taskToAppend = new Task(description, deadlineInMinutes);
-           repository.appendTaskToEndOfTodo(todoName, taskToAppend);
-        }catch (RuntimeException rte){
+    private static void appendTaskToTodo(TodoRepository repository, String todoName, Scanner input) {
+        printDashes();
+        try {
+            System.out.println("What is the task description?");
+            String description = input.nextLine();
+            System.out.println("What is the task deadline in minutes");
+            Long deadlineInMinutes = Long.parseLong(input.nextLine());
+            Task taskToAppend = new Task(description, deadlineInMinutes);
+            repository.appendTaskToEndOfTodo(todoName, taskToAppend);
+        } catch (RuntimeException rte) {
             System.err.println(rte.getMessage() + "\u0020Do you wish to continue?[Y/N]");
-            String reply = input.nextLine();
-            switch (reply){
-                case Y -> {
-                    System.out.println("What's the Todo name again?");
-                    todoName = input.nextLine();
-                    appendTaskToTodo(repository, todoName, input);
-                }
-                case N -> System.exit(0);
-            }
+            handleException(input, () -> {
+                String newTodoName;
+                System.out.println("What's the Todo name again?");
+                newTodoName = input.nextLine();
+                appendTaskToTodo(repository, newTodoName, input);
+            });
         }
-        printStars();
+        printDashes();
     }
 
-    private static void removeTaskFromTodo(TodoRepository repository, String todoName, Scanner input){
-        printStars();
-        try{
-            System.out.println("What's the position of this task?" );
+    private static void removeTaskFromTodo(TodoRepository repository, String todoName, Scanner input) {
+        printDashes();
+        try {
+            System.out.println("What's the position of this task?");
             int taskPosition = Integer.parseInt(input.nextLine());
             repository.remove(todoName, taskPosition);
-        }catch (RuntimeException rte){
-            System.err.println(rte.getMessage()+"\u0020Do you wish to continue?[Y/N]");
-            switch (input.nextLine()){
-                case Y -> {
-                    System.out.println("What's the todo name again?");
-                    todoName = input.nextLine();
-                    removeTaskFromTodo(repository, todoName, input);
-                }
-                case N -> System.exit(0);
-            }
+        } catch (RuntimeException rte) {
+            System.err.println(rte.getMessage() + "\u0020Do you wish to continue?[Y/N]");
+            handleException(input, () -> {
+                String newTodoName;
+                System.out.println("What's the todo name again?");
+                newTodoName = input.nextLine();
+                removeTaskFromTodo(repository, newTodoName, input);
+            });
         }
     }
 
-    private static void createNewTodo(TodoRepository repository, Todo todo, Scanner input){
-        printStars();
+    private static void createNewTodo(TodoRepository repository, Todo todo, Scanner input) {
+        printDashes();
         System.out.println("What's the task description?");
         String description = input.nextLine();
         System.out.println("What's the task deadline in minutes?");
@@ -171,40 +168,67 @@ public class CommandLineRunner {
             System.out.println("Task added!");
         }
         System.out.println("Do you want to add another task?[Y/N]");
-        switch (input.nextLine()){
-            case Y -> createNewTodo(repository, todo, input);
-            case N -> {
-                try {
-                    repository.saveTodo(todo);
-                }catch (RuntimeException rte){
-                    System.err.println(rte.getMessage()+"\u0020Try again with a different todo name.");
-                }
-            }
-        }
+        addAnotherTaskThenSaveNewTodo(repository, todo, input);
     }
 
-    private static void checkTaskStatus(TodoRepository repository, String todoName, Scanner input){
-        printStars();
-        try{
+    private static void checkTaskStatus(TodoRepository repository, String todoName, Scanner input) {
+        printDashes();
+        try {
             System.out.println("What's the position of this task?");
             int taskPosition = Integer.parseInt(input.nextLine());
             String status = repository.checkTaskStatus(todoName, taskPosition);
             System.out.printf("\nTask\sis\s%s\n", status);
-        }catch(RuntimeException rte){
-            System.err.println(rte.getMessage()+"\u0020Do you wish to continue?[Y/N]");
-            switch (input.nextLine()){
-                case Y -> {
-                    System.out.println("What's the todo name again?");
-                    todoName = input.nextLine();
-                    checkTaskStatus(repository, todoName, input);
+        } catch (RuntimeException rte) {
+            System.err.println(rte.getMessage() + "\u0020Do you wish to continue?[Y/N]");
+            handleException(input, () -> {
+                String newTodoName;
+                System.out.println("What's the todo name again?");
+                newTodoName = input.nextLine();
+                checkTaskStatus(repository, newTodoName, input);
+            });
+        }
+    }
+
+    private static void addAnotherTaskThenSaveNewTodo(TodoRepository repository, Todo todo, Scanner input) {
+        try {
+            switch (input.nextLine()) {
+                case Y -> createNewTodo(repository, todo, input);
+                case N -> repository.saveTodo(todo);
+                default -> {
+                    System.err.println("You are required to type either \"Y\" or\" +\n\"N\". Do you wish to continue?[Y/N]");
+                    addAnotherTaskThenSaveNewTodo(repository, todo, input);
                 }
-                case N -> System.exit(0);
+            }
+        } catch (RuntimeException ex) {
+            System.err.println(ex.getMessage() + "\u0020Provide another todo Name");
+            String newTodoName;
+            System.out.println("What's the todo name again?");
+            newTodoName = input.nextLine();
+            todo.setName(newTodoName);
+            repository.saveTodo(todo);
+        }
+    }
+
+    private static void handleException(Scanner input, Runnable actionToPerform) {
+        String reply = input.nextLine();
+        switch (reply) {
+            case Y -> {
+                if (actionToPerform != null) {
+                    actionToPerform.run();
+                }
+            }
+            case N -> System.exit(0);
+            default -> {
+                System.err.println("\"You are required to type either \"Y\" or \"N\". Do you wish to continue?[Y/N]\"");
+                handleException(input, actionToPerform);
             }
         }
     }
 
-    private static void printStars() {
-        System.out.print("\n*********************************************************************\n");
+    private static void printDashes() {
+        System.out.print("\n---------------------------------------------------------------------------------\n");
     }
+
+
 }
 

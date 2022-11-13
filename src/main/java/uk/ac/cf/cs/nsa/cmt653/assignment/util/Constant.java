@@ -1,6 +1,12 @@
 package uk.ac.cf.cs.nsa.cmt653.assignment.util;
 
 public class Constant {
+
+    public static final String DESCRIPTION = "Description";
+
+    public static final String DEADLINE = "Deadline";
+
+    public static final String STATUS = "Status";
     public static final String LIST_ALL_TODO_NAMES = "LIST ALL TODO NAMES";
 
     public static final String LIST_ALL_TODO_NAMES_TIP = "get names of todos";
@@ -20,6 +26,8 @@ public class Constant {
     public static final String QUIT_TIP = "quit the todolist program";
     public static final String HELP = "HELP";
     public static final String HELP_TIP = "view all commands";
+
+    public static final String HEADER_FORMAT = "%-20s%-60s%-20s";
 
     public static final String Y = "Y";
 
