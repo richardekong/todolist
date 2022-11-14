@@ -7,22 +7,24 @@ public class Task {
     private String description;
     private final LocalTime startTime;
     private Duration deadlineInMinutes;
+    private Duration timeSpentInMinutes;
     private Status status;
     private static final Long defaultDeadLineInMinutes = 10L;
-
     public Task() {
         description = "New-" + getClass().getSimpleName();
-        deadlineInMinutes = Duration.ofMinutes(defaultDeadLineInMinutes);
         startTime = LocalTime.now();
+        deadlineInMinutes = Duration.ofMinutes(defaultDeadLineInMinutes);
+        timeSpentInMinutes = Duration.ofMinutes(getTimeSpentInMinutes());
         status = Status.unDone;
     }
 
     public Task(String description, Long deadlineInMinutes) {
         this.description = description;
+        this.startTime = LocalTime.now();
         this.deadlineInMinutes = (deadlineInMinutes > 0L)
                 ? Duration.ofMinutes(deadlineInMinutes)
                 : Duration.ofMinutes(defaultDeadLineInMinutes);
-        this.startTime = LocalTime.now();
+        timeSpentInMinutes = Duration.ofMinutes(getTimeSpentInMinutes());
         this.status = Status.unDone;
     }
 
@@ -52,10 +54,25 @@ public class Task {
         }
         return status.status();
     }
+    private Long getTimeSpentInMinutes() {
+        long timeDifference =  Integer.toUnsignedLong(LocalTime.now().getMinute() - startTime.getMinute());
+        long deadline = getDeadlineInMinutes();
+        if (timeDifference > deadline) {
+            timeSpentInMinutes = Duration.ofMinutes(deadline);
+            return deadline;
+        }
+        timeSpentInMinutes = Duration.ofMinutes(timeDifference);
+        return timeDifference;
+    }
 
     @Override
     public String toString() {
-        return String.format("%-40s%-20s%-10s%n", description, getDeadlineInMinutes() + "\sMinutes", getStatusString());
+        return String.format(
+                "%-40s%-20s%-20s%-10s%n",
+                description,
+                getDeadlineInMinutes() + "\sMinutes",
+                getTimeSpentInMinutes() + "\sMinutes",
+                getStatusString());
     }
 }
 

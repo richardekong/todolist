@@ -6,6 +6,7 @@ public class Constant {
 
     public static final String DEADLINE = "Deadline";
 
+    public static final String TIME_SPENT = "Time Spent";
     public static final String STATUS = "Status";
     public static final String LIST_ALL_TODO_NAMES = "LIST ALL TODO NAMES";
 
@@ -27,7 +28,7 @@ public class Constant {
     public static final String HELP = "HELP";
     public static final String HELP_TIP = "view all commands";
 
-    public static final String HEADER_FORMAT = "%-20s%-60s%-20s";
+    public static final String HEADER_FORMAT = "%-20s%-68s%-20s";
 
     public static final String Y = "Y";
 

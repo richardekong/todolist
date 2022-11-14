@@ -87,7 +87,7 @@ public class CommandLineRunner {
         printDashes();
         Arrays.stream(Command.values()).forEach(
                 cmd -> System.out.printf(
-                        "%-5s%-75s%-5s%n",
+                        "%-13s%-75s%-13s%n",
                         "|",
                         "Type or paste \"" + cmd.instruction() + "\" to " + cmd.tip(),
                         "|"));
@@ -107,7 +107,7 @@ public class CommandLineRunner {
             Todo todoToBeViewed = repository.findTodoByName(todoName);
             System.out.println("Todo Name:\u0020" + todoToBeViewed.getName());
             printDashes();
-            System.out.printf("%-40S%-20S%-10S", DESCRIPTION, DEADLINE, STATUS);
+            System.out.printf("%-40S%-20S%-20S%-10S", DESCRIPTION, DEADLINE, TIME_SPENT, STATUS);
             printDashes();
             todoToBeViewed.getTasks().forEach(System.out::print);
         } catch (RuntimeException rte) {
@@ -162,9 +162,9 @@ public class CommandLineRunner {
             int taskPosition = Integer.parseInt(input.nextLine());
             repository.remove(todoName, taskPosition);
         } catch (RuntimeException ex) {
-            if (ex instanceof NumberFormatException){
+            if (ex instanceof NumberFormatException) {
                 System.err.println("Wrong value! Do you wish to continue? [Y/N]");
-                handleException(input, () ->{
+                handleException(input, () -> {
                     System.out.println("What's the position of this task again?");
                     repository.remove(todoName, Integer.parseInt(input.nextLine()));
                 });
@@ -188,9 +188,9 @@ public class CommandLineRunner {
         AtomicLong deadlineInMinutes = new AtomicLong(0);
         try {
             deadlineInMinutes.set(Long.parseLong(input.nextLine()));
-        }catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             System.err.println("Wrong value! Do you wish to continue? [Y/N]");
-            handleException(input, () ->{
+            handleException(input, () -> {
                 System.out.println("What's the task deadline in minutes again? eg numbers like 1,2 etc");
                 deadlineInMinutes.set(Long.parseLong(input.nextLine()));
             });
@@ -212,9 +212,9 @@ public class CommandLineRunner {
             String status = repository.checkTaskStatus(todoName, taskPosition);
             System.out.printf("\nTask\sis\s%s\n", status);
         } catch (RuntimeException ex) {
-            if (ex instanceof NumberFormatException){
+            if (ex instanceof NumberFormatException) {
                 System.err.println("Wrong value, do you wish to continue?[Y/N]");
-                handleException(input, () ->{
+                handleException(input, () -> {
                     System.out.println("What's the task's position again? eg numbers like 1,2 etc");
                     System.out.printf("\nTask\sis\s%s\n", repository.checkTaskStatus(todoName, Integer.parseInt(input.nextLine())));
                 });
@@ -273,7 +273,13 @@ public class CommandLineRunner {
     }
 
     private static void printDashes() {
-        System.out.print("\n---------------------------------------------------------------------------------\n");
+        final int dashesToPrint = 90;
+        final String dash = "-";
+        System.out.println();
+        for (int i = 1; i < dashesToPrint; i++){
+            System.out.print(dash);
+        }
+        System.out.println();
     }
 
 }
