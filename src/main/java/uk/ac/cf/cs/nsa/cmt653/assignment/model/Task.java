@@ -35,16 +35,15 @@ public class Task {
     }
 
     public void setDeadlineInMinutes(Long deadlineInMinutes) {
-        if (deadlineInMinutes <= 0L) {
-            System.err.println("Invalid Deadline!");
-            return;
-        }
-        this.deadlineInMinutes = Duration.ofMinutes(deadlineInMinutes);
+        this.deadlineInMinutes = (deadlineInMinutes > 0L)
+                ? Duration.ofMinutes(deadlineInMinutes)
+                : Duration.ofMinutes(defaultDeadLineInMinutes);
     }
 
-    public Duration getDeadlineInMinutes() {
-        return deadlineInMinutes;
+    public long getDeadlineInMinutes() {
+        return deadlineInMinutes.getSeconds() / 60;
     }
+
     public String getStatusString() {
         LocalTime estimatedDeadline = this.startTime.plus(deadlineInMinutes);
         LocalTime now = LocalTime.now();
@@ -53,9 +52,10 @@ public class Task {
         }
         return status.status();
     }
+
     @Override
     public String toString() {
-        return String.format("%-40s%-20s%-10s%n", description, (deadlineInMinutes.getSeconds()/60)+"\sMinutes", getStatusString());
+        return String.format("%-40s%-20s%-10s%n", description, getDeadlineInMinutes() + "\sMinutes", getStatusString());
     }
 }
 
