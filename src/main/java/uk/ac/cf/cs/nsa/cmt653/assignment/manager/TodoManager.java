@@ -16,7 +16,7 @@ public class TodoManager implements TodoRepository {
             throw new RuntimeException(todo.getName() + "\u0020already exist");
         }
         dataStore.put(todo.getName(), todo);
-        System.out.println(todo.getName() + "\u0020saved");
+        System.out.println(todo.getName() + "\u0020saved!");
     }
 
     @Override
@@ -77,7 +77,7 @@ public class TodoManager implements TodoRepository {
             return dataStore.get(todoName)
                     .getTasks()
                     .get(actualPosition)
-                    .getStatusString();
+                    .getStatus();
         } catch (IndexOutOfBoundsException exception) {
             throw new IndexOutOfBoundsException("Task" + taskPosition + "\u0020does not exist");
         }

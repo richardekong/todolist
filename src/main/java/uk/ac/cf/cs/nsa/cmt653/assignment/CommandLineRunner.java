@@ -86,8 +86,9 @@ public class CommandLineRunner {
         System.out.printf(HEADER_FORMAT, "|", "TODOLIST HELP SECTION", "|");
         printDashes();
         Arrays.stream(Command.values()).forEach(
+
                 cmd -> System.out.printf(
-                        "%-13s%-75s%-13s%n",
+                        "%-20s%-88s%-13s%n",
                         "|",
                         "Type or paste \"" + cmd.instruction() + "\" to " + cmd.tip(),
                         "|"));
@@ -107,7 +108,7 @@ public class CommandLineRunner {
             Todo todoToBeViewed = repository.findTodoByName(todoName);
             System.out.println("Todo Name:\u0020" + todoToBeViewed.getName());
             printDashes();
-            System.out.printf("%-40S%-20S%-20S%-10S", DESCRIPTION, DEADLINE, TIME_SPENT, STATUS);
+            System.out.printf("%-40S%-20S%-20S%-20S%-10S", DESCRIPTION, DEADLINE, TIME_SPENT, TIME_LEFT, STATUS);
             printDashes();
             todoToBeViewed.getTasks().forEach(System.out::print);
         } catch (RuntimeException rte) {
@@ -232,7 +233,8 @@ public class CommandLineRunner {
 
     private static void addAnotherTaskThenSaveNewTodo(TodoRepository repository, Todo todo, Scanner input) {
         try {
-            switch (input.nextLine()) {
+            String reply = input.nextLine().toUpperCase().trim();
+            switch (reply) {
                 case Y -> createNewTodo(repository, todo, input);
                 case N -> repository.saveTodo(todo);
                 default -> {
@@ -251,7 +253,7 @@ public class CommandLineRunner {
     }
 
     private static void handleException(Scanner input, Runnable actionToPerform) {
-        String reply = input.nextLine();
+        String reply = input.nextLine().toUpperCase().trim();
         try {
             switch (reply) {
                 case Y -> {
@@ -273,10 +275,10 @@ public class CommandLineRunner {
     }
 
     private static void printDashes() {
-        final int dashesToPrint = 90;
+        final int dashesToPrint = 110;
         final String dash = "-";
         System.out.println();
-        for (int i = 1; i < dashesToPrint; i++){
+        for (int i = 1; i < dashesToPrint; i++) {
             System.out.print(dash);
         }
         System.out.println();
