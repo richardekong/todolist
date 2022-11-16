@@ -233,7 +233,9 @@ public class CommandLineRunner {
 
     private static void addAnotherTaskThenSaveNewTodo(TodoRepository repository, Todo todo, Scanner input) {
         try {
-            String reply = input.nextLine().toUpperCase().trim();
+            String reply = input.nextLine()
+                    .toUpperCase()
+                    .trim();
             switch (reply) {
                 case Y -> createNewTodo(repository, todo, input);
                 case N -> repository.saveTodo(todo);
