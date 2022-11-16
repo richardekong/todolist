@@ -4,7 +4,7 @@ import uk.ac.cf.cs.nsa.cmt653.assignment.manager.TodoManager;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
 import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoRepository;
-import uk.ac.cf.cs.nsa.cmt653.assignment.util.Command;
+import uk.ac.cf.cs.nsa.cmt653.assignment.model.Command;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -88,7 +88,7 @@ public class CommandLineRunner {
         Arrays.stream(Command.values()).forEach(
 
                 cmd -> System.out.printf(
-                        "%-20s%-88s%-13s%n",
+                        "%-20s%-98s%-13s%n",
                         "|",
                         "Type or paste \"" + cmd.instruction() + "\" to " + cmd.tip(),
                         "|"));
@@ -108,7 +108,7 @@ public class CommandLineRunner {
             Todo todoToBeViewed = repository.findTodoByName(todoName);
             System.out.println("Todo Name:\u0020" + todoToBeViewed.getName());
             printDashes();
-            System.out.printf("%-40S%-20S%-20S%-20S%-10S", DESCRIPTION, DEADLINE, TIME_SPENT, TIME_LEFT, STATUS);
+            System.out.printf("%-10S%-40S%-20S%-20S%-20S%-10S", ID, DESCRIPTION, DEADLINE, TIME_SPENT, TIME_LEFT, STATUS);
             printDashes();
             todoToBeViewed.getTasks().forEach(System.out::print);
         } catch (RuntimeException rte) {
@@ -197,7 +197,7 @@ public class CommandLineRunner {
             });
         }
         Task task = new Task(description, deadlineInMinutes.get());
-        boolean taskAdded = todo.getTasks().add(task);
+        boolean taskAdded = todo.add(task);
         if (taskAdded) {
             System.out.println("Task added!");
         }
@@ -277,7 +277,7 @@ public class CommandLineRunner {
     }
 
     private static void printDashes() {
-        final int dashesToPrint = 110;
+        final int dashesToPrint = 120;
         final String dash = "-";
         System.out.println();
         for (int i = 1; i < dashesToPrint; i++) {

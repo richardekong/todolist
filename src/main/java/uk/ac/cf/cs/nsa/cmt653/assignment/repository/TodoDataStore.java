@@ -3,13 +3,10 @@ package uk.ac.cf.cs.nsa.cmt653.assignment.repository;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public enum TodoDataStore {
-
+enum TodoDataStore {
     INSTANCE;
     private final Task todo1Task1 = new Task("Buy food stuff from the Store", 30L);
     private final Task todo1Task2 = new Task("Arrange food stuff in kitchen", 10L);
@@ -36,7 +33,6 @@ public enum TodoDataStore {
                     todo2.getName(), todo2
             )
     );
-
     public LinkedHashMap<String, Todo> getDataStore() {
         return todoDataStore;
     }

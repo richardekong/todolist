@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 public class Task {
+
+    private int id;
     private String description;
     private final LocalTime startTime;
     private long deadlineInMinutes;
@@ -24,6 +26,13 @@ public class Task {
         this.status = Status.unDone.status();
     }
 
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getId(){
+        return id;
+    }
     public void setDescription(String description) {
         this.description = description;
     }
@@ -64,7 +73,8 @@ public class Task {
     public String toString() {
         final String minutes = "Minutes";
         return String.format(
-                "%-40s%-20s%-20s%-20s%-10s%n",
+                "%-10d%-40s%-20s%-20s%-20s%-10s%n",
+                getId(),
                 getDescription(),
                 getDeadlineInMinutes() + "\s" + minutes,
                 (getTimeSpentInMinutes() > 0 ? getTimeSpentInMinutes() + "\s" + minutes : "-"),

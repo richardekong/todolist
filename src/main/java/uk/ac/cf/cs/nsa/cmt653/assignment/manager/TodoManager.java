@@ -42,9 +42,7 @@ public class TodoManager implements TodoRepository {
         if (!dataStore.containsKey(todoName)) {
             throw new RuntimeException(todoName + "\u0020does not exist");
         }
-        boolean added = dataStore.get(todoName)
-                .getTasks()
-                .add(task);
+        boolean added = dataStore.get(todoName).add(task);
         if (added) {
             System.out.println("Task added!");
         }

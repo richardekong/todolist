@@ -1,5 +1,7 @@
-package uk.ac.cf.cs.nsa.cmt653.assignment.util;
+package uk.ac.cf.cs.nsa.cmt653.assignment.model;
 
+
+import uk.ac.cf.cs.nsa.cmt653.assignment.util.Constant;
 
 import static uk.ac.cf.cs.nsa.cmt653.assignment.util.Constant.*;
 
