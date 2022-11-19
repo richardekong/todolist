@@ -7,9 +7,23 @@ import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoRepository;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
+/**
+ * TodoManager implements the TodoRepository which has
+ * total access to the dataStore object, an instance
+ * of TodoDataStore.
+ * As an implementor of the TodoRepository, TodoManager
+ * has automatic access to the underlying TodoDataStore
+ */
 public class TodoManager implements TodoRepository {
     LinkedHashMap<String, Todo> dataStore = dataStore();
 
+    /**
+     * Saves a Todo item to the datastore object,
+     * provided the item doesn't exist in the datastore.
+     * param: Todo item to be saved
+     * throws: RuntimeException a todo item with the same
+     * exists in the dataStore.
+     */
     @Override
     public void saveTodo(Todo todo) throws RuntimeException {
         if (dataStore.containsKey(todo.getName())) {
@@ -19,6 +33,13 @@ public class TodoManager implements TodoRepository {
         System.out.println(todo.getName() + "\u0020saved!");
     }
 
+    /**
+     * Retrieves a Todo item from the dataStore
+     * param: name of the Todo item to be retrieved
+     * throws: RuntimeException if there is no Todo item
+     * with such a name
+     * returns: Todo item
+     */
     @Override
     public Todo findTodoByName(String todoName) throws RuntimeException {
         Todo todo = dataStore.get(todoName);
@@ -28,6 +49,11 @@ public class TodoManager implements TodoRepository {
         return todo;
     }
 
+    /**
+     * Retrieves all Todo items from
+     * the dataStore.
+     * returns: List of Todo
+     */
     @Override
     public LinkedList<String> listNamesOfTodos() {
         return new LinkedList<>(dataStore
@@ -37,6 +63,12 @@ public class TodoManager implements TodoRepository {
                 .toList());
     }
 
+    /**
+     * Appends a task to the end of the Todo item,
+     * as long as the Todo item exists.
+     * params: name of the Todo item and
+     * the task to be appended
+     * */
     @Override
     public void appendTaskToEndOfTodo(String todoName, Task task) throws RuntimeException {
         if (!dataStore.containsKey(todoName)) {
@@ -48,6 +80,10 @@ public class TodoManager implements TodoRepository {
         }
     }
 
+    /**
+     * Removes a Todo item from the dataStore,
+     * using the name of the todo item, amd the position of
+     * */
     @Override
     public void remove(String todoName, int taskPosition) throws RuntimeException {
         int actualPosition = taskPosition - 1;
