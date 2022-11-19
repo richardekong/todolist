@@ -18,6 +18,8 @@ public class Constant {
     public static final String REMOVE_TASK = "REMOVE TASK";
     public static final String REMOVE_TASK_TIP = "remove a task from tasks in a todo";
     public static final String CREATE_NEW_TODO = "CREATE NEW TODO";
+    public static final String CHECK_TASK_STATUS_TIP = "check the status of a task";
+    public static final String CHECK_TASK_STATUS = "CHECK TASK STATUS";
     public static final String CREATE_NEW_TODO_TIP = "add a new todo to the store";
     public static final String RECORD_TASK_COMPLETION = "RECORD TASK COMPLETION";
     public static final String RECORD_TASK_COMPLETION_TIP = "check if a task is done";

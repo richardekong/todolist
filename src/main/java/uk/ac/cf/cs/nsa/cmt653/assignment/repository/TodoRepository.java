@@ -1,5 +1,6 @@
 package uk.ac.cf.cs.nsa.cmt653.assignment.repository;
 
+import uk.ac.cf.cs.nsa.cmt653.assignment.model.Status;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
 
@@ -16,9 +17,11 @@ public interface TodoRepository {
 
     void appendTaskToEndOfTodo(String todoName, Task task);
 
-    void remove(String todoName, int taskPosition);
+    void remove(String todoName, int taskId);
 
-    String checkTaskStatus(String todoName, int taskPosition);
+    String checkTaskStatus(String todoName, int taskId);
+
+    void recordTaskCompletion(String todoName, int taskId, Status status);
 
     default LinkedHashMap<String, Todo> dataStore() {
         return TodoDataStore.INSTANCE.getDataStore();

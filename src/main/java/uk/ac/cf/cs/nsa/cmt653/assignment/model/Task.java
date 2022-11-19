@@ -16,23 +16,24 @@ public class Task {
         description = "New-" + getClass().getSimpleName();
         startTime = LocalTime.now();
         deadlineInMinutes = defaultDeadLineInMinutes;
-        status = Status.unDone.status();
+        status = Status.scheduled.status();
     }
 
     public Task(String description, Long deadlineInMinutes) {
         this.description = description;
         this.startTime = LocalTime.now();
         this.deadlineInMinutes = (deadlineInMinutes > 0L) ? deadlineInMinutes : defaultDeadLineInMinutes;
-        this.status = Status.unDone.status();
+        this.status = Status.scheduled.status();
     }
 
-    public void setId(int id){
+    public void setId(int id) {
         this.id = id;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -51,11 +52,27 @@ public class Task {
         return deadlineInMinutes;
     }
 
+    public void setStatus(Status status) {
+        if (this.status.equals(Status.closed.status())) {
+            System.err.printf("Task with id number %d is closed\n", id);
+            return;
+        } else if (this.status.equals(Status.done.status()) && getTimeLeftInMinutes() <= 0) {
+            System.err.printf("Status of Task with id number %d is done %s\n", id, status.status());
+            return;
+        } else {
+            this.status = status.status();
+            System.out.printf("Task with id number %d is now set to %s\n", id, status.status());
+        }
+    }
+
     public String getStatus() {
+        String currentStatus = status;
         LocalTime estimatedDeadline = this.startTime.plus(Duration.ofMinutes(deadlineInMinutes));
         LocalTime now = LocalTime.now();
-        if (now.isAfter(estimatedDeadline)) {
-            status = Status.done.status();
+        if (now.isAfter(estimatedDeadline) && !status.equals(Status.done.status())) {
+            status = Status.closed.status();
+        } else {
+            status = currentStatus;
         }
         return status;
     }
@@ -67,6 +84,10 @@ public class Task {
 
     public long getTimeLeftInMinutes() {
         return deadlineInMinutes - getTimeSpentInMinutes();
+    }
+
+    public boolean isClosed() {
+        return status.equals(Status.closed.status());
     }
 
     @Override

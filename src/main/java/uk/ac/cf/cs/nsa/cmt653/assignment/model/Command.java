@@ -17,6 +17,8 @@ public enum Command {
 
     CREATE_NEW_TODO(Constant.CREATE_NEW_TODO, CREATE_NEW_TODO_TIP),
 
+    CHECK_TASK_STATUS(Constant.CHECK_TASK_STATUS, CHECK_TASK_STATUS_TIP),
+
     RECORD_TASK_COMPLETION(Constant.RECORD_TASK_COMPLETION, RECORD_TASK_COMPLETION_TIP),
 
     QUIT(Constant.QUIT, QUIT_TIP),
@@ -34,7 +36,7 @@ public enum Command {
         return instruction;
     }
 
-    public String tip(){
+    public String tip() {
         return tip;
     }
 

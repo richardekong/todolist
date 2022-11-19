@@ -1,6 +1,7 @@
 package uk.ac.cf.cs.nsa.cmt653.assignment;
 
 import uk.ac.cf.cs.nsa.cmt653.assignment.manager.TodoManager;
+import uk.ac.cf.cs.nsa.cmt653.assignment.model.Status;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Task;
 import uk.ac.cf.cs.nsa.cmt653.assignment.model.Todo;
 import uk.ac.cf.cs.nsa.cmt653.assignment.repository.TodoRepository;
@@ -54,11 +55,13 @@ public class CommandLineRunner {
                     Todo todo = new Todo(todoName, new LinkedList<>());
                     createNewTodo(repo, todo, input);
                 }
-                case RECORD_TASK_COMPLETION -> {
+                case CHECK_TASK_STATUS -> {
                     System.out.println("What's the Todo Name?");
                     String todoName = input.nextLine();
                     checkTaskStatus(repo, todoName, input);
                 }
+                case RECORD_TASK_COMPLETION -> recordTaskCompletion(repo, input);
+
                 case HELP -> showHelpDetails();
 
                 case QUIT -> {
@@ -158,20 +161,21 @@ public class CommandLineRunner {
 
     private static void removeTaskFromTodo(TodoRepository repository, String todoName, Scanner input) {
         printDashes();
+
         try {
-            System.out.println("What's the position of this task?");
-            int taskPosition = Integer.parseInt(input.nextLine());
-            repository.remove(todoName, taskPosition);
+            System.out.println("What's the task ID?");
+            int taskId = Integer.parseInt(input.nextLine());
+            repository.remove(todoName, taskId);
         } catch (RuntimeException ex) {
             if (ex instanceof NumberFormatException) {
-                System.err.println("Wrong value! Do you wish to continue? [Y/N]");
+                System.err.println("Wrong value! Please do you wish to continue? [Y/N]");
                 handleException(input, () -> {
-                    System.out.println("What's the position of this task again?");
+                    System.out.println("What's the task ID again?");
                     repository.remove(todoName, Integer.parseInt(input.nextLine()));
                 });
                 return;
             }
-            System.err.println(ex.getMessage() + "\u0020Do you wish to continue?[Y/N]");
+            System.err.println(ex.getMessage() + "\u0020Please do you wish to continue?[Y/N]");
             handleException(input, () -> {
                 String newTodoName;
                 System.out.println("What's the todo name again?");
@@ -208,7 +212,7 @@ public class CommandLineRunner {
     private static void checkTaskStatus(TodoRepository repository, String todoName, Scanner input) {
         printDashes();
         try {
-            System.out.println("What's the position of this task?");
+            System.out.println("What's the task's ID?");
             int taskPosition = Integer.parseInt(input.nextLine());
             String status = repository.checkTaskStatus(todoName, taskPosition);
             System.out.printf("\nTask\sis\s%s\n", status);
@@ -216,7 +220,7 @@ public class CommandLineRunner {
             if (ex instanceof NumberFormatException) {
                 System.err.println("Wrong value, do you wish to continue?[Y/N]");
                 handleException(input, () -> {
-                    System.out.println("What's the task's position again? eg numbers like 1,2 etc");
+                    System.out.println("What's the task's ID again? eg numbers like 1,2 etc");
                     System.out.printf("\nTask\sis\s%s\n", repository.checkTaskStatus(todoName, Integer.parseInt(input.nextLine())));
                 });
                 return;
@@ -229,6 +233,38 @@ public class CommandLineRunner {
                 checkTaskStatus(repository, newTodoName, input);
             });
         }
+        printDashes();
+    }
+    private static void recordTaskCompletion(TodoRepository repository, Scanner input){
+        printDashes();
+        try{
+            System.out.println("What's the Todo Name?");
+            String todoName = input.nextLine();
+            System.out.println("What's the task's ID?");
+            int taskId = Integer.parseInt(input.nextLine());
+            System.out.printf("Please have you completed task with Id number %d? [Y/N]\n", taskId);
+            String reply = input.nextLine()
+                    .toUpperCase()
+                    .trim();
+            switch (reply){
+                case Y -> repository.recordTaskCompletion(todoName, taskId, Status.done);
+                case N -> repository.recordTaskCompletion(todoName, taskId, Status.unDone);
+                default -> {
+                    System.err.println("You are required to type either \"Y\" or\" +\n\"N\". Please do you wish to repeat the record completion process?[Y/N]");
+                    recordTaskCompletion(repository, input);
+                }
+            }
+        }catch (RuntimeException ex){
+            if (ex instanceof NumberFormatException){
+                System.err.println("Wrong value, please do you wish to repeat the record completion process?[Y/N]");
+                handleException(input, () ->recordTaskCompletion(repository, input));
+                return;
+            }
+            System.err.println(ex.getMessage());
+            System.out.println("Please do you wish to repeat the record completion process?[Y/N]");
+            handleException(input, () -> recordTaskCompletion(repository, input));
+        }
+
     }
 
     private static void addAnotherTaskThenSaveNewTodo(TodoRepository repository, Todo todo, Scanner input) {
@@ -240,7 +276,7 @@ public class CommandLineRunner {
                 case Y -> createNewTodo(repository, todo, input);
                 case N -> repository.saveTodo(todo);
                 default -> {
-                    System.err.println("You are required to type either \"Y\" or\" +\n\"N\". Do you wish to continue?[Y/N]");
+                    System.err.println("You are required to type either \"Y\" or \"N\". Do you wish to continue?[Y/N]");
                     addAnotherTaskThenSaveNewTodo(repository, todo, input);
                 }
             }

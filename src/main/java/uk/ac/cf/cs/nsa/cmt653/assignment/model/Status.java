@@ -1,7 +1,10 @@
 package uk.ac.cf.cs.nsa.cmt653.assignment.model;
 
 public enum Status {
-    unDone("undone"), done("done");
+    scheduled("scheduled"),
+    unDone("undone"),
+    done("done"),
+    closed("closed");
     private final String status;
 
     Status(String status) {
